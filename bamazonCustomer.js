@@ -8,3 +8,23 @@ let connection = mysql.createConnection({
     password: 'password',
     database: 'bamazon_db'
 });
+
+connection.connect(function(err) {
+    if (err) throw err;
+    promptUserInput();
+});
+
+function promptUserInput() {
+    inquirer.prompt({
+        type: "list",
+        name: "menu",
+        msg: "What would like to do?",
+        choice: [
+            "a",
+            "b",
+            "c"
+        ]
+    }).then(function(answer) {
+
+    });
+}
