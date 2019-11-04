@@ -18,8 +18,12 @@ let connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    promptUserInput();
+    run();
 });
+
+function run() {
+    readAndDisplayProducts();
+}
 
 function readAndDisplayProducts() {
 
