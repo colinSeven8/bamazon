@@ -5,7 +5,7 @@ let Table = require('cli-table');
 // Globals
 let table = new Table({
     head: ['PRODUCT ID', 'PRODUCT NAME', 'DEPARTMENT', 'PRICE', 'QUANTITY'],
-    colWidths: [100, 200]
+    colWidths: [15, 30, 30, 10, 10]
 });
 
 let connection = mysql.createConnection({
@@ -16,55 +16,57 @@ let connection = mysql.createConnection({
     database: 'bamazon_db'
 });
 
-connection.connect(function (err) {
+connection.connect((err) => {
     if (err) throw err;
-    run();
-});
-
-function run() {
     readAndDisplayProducts();
-}
+});
 
 function readAndDisplayProducts() {
 
     let query = "SELECT * FROM products";
-    connection.query(query, function (err, res) {
+    connection.query(query, (err, res) => {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
             table.push(
-                { id: res[i].item_id },
-                { name: res[i].product_name },
-                { dept: res[i].department_name },
-                { price: res[i].price },
-                { quantity: res[i].stock_quantity }
+                [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity]
             );
-            console.log(table.toString());
         }
+        console.log(table.toString());
         promptUserInput();
     });
 }
 
+const validateResponse = async (val) => {
+    if (val.toLowerCase() === "q") process.exit();
+    return val > 0;
+}
+
 function promptUserInput() {
-    inquirer.prompt(
+    inquirer.prompt([
         {
             type: "input",
             name: "ID",
-            msg: "What is the ID of the product you would like to buy?"
+            message: "What is the ID of the product you would like to buy?",
+            validate: validateResponse
         },
         {
             type: "input",
             name: "QUANTITY",
-            msg: "How many would you like to purchase?"
-        }).then(function (answer) {
-
-            for (let i = 0; i < table.length; i++) {
-                if (answer.ID === table[i].id && answer.QUANTITY >= table[i].quantity) {
-                    let total = (table[i].price * answer.QUANTITY).toFixed(2);
-                    console.log('\nThank you for your purchase! Your total is $' + total + '\n');
+            message: "How many would you like to purchase?",
+            validate: validateResponse
+        }]).then((answer) => {
+            let found = false;
+            for (let key in table) {
+                if ((answer.ID * 1) === table[key][0] && (answer.QUANTITY * 1) <= table[key][4]) {
+                    found = true
+                    let totalCost = (table[key][3] * answer.QUANTITY).toFixed(2);
+                    let newQuantity = table[key][4] - answer.QUANTITY;
+                    console.log('\nThank you for your purchase! Your total is $' + totalCost + '\n');
                     connection.end();
-                } else {
-                    console.log("Please check the item number and quantity again...");
                 }
             }
+            if (!found) console.log("Please check the item number and quantity again...");
+            found = false;
+            promptUserInput();
         });
 }

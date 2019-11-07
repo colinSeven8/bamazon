@@ -1,15 +1,15 @@
 DROP DATABASE IF EXISTS bamazon_db;
-CREATE DATABASE bamason_db;
+CREATE DATABASE bamazon_db;
 
 USE bamazon_db;
 
 CREATE TABLE products
 (
     item_id INT NOT NULL AUTO_INCREMENT,
-    product_name VARCHAR (45) NOT NULL DEFAULT "",
-    department_name VARCHAR (45) NOT NULL DEFAULT "",
-    price DECIMAL (5, 2) DEFAULT 0.00,
-    stock_quantity INT DEFAULT 0,
+    product_name VARCHAR (45) NOT NULL,
+    department_name VARCHAR (45) NOT NULL,
+    price DECIMAL (5, 2) NOT NULL DEFAULT 0.00,
+    stock_quantity INT NOT NULL DEFAULT 0,
     PRIMARY KEY (item_id)
 );
 
@@ -28,8 +28,21 @@ CREATE TABLE products
         ("Putter", "Sporting Goods", 134.99, 10),
         ("Driver", "Sporting Goods", 289.99, 30),
         ("Weight Lifting Bench", "Sporting Goods", 109.99, 5),
-        ("Squat Rack", "Sporting Goods", 219.99, 5)
-    ;
+        ("Squat Rack", "Sporting Goods", 219.99, 5);
 
-    SELECT *
-    FROM bamazon_db.products;
+    SELECT * FROM bamazon_db.products;
+
+    CREATE TABLE departments
+(
+    department_id INT AUTO_INCREMENT NOT NULL,
+    department_name VARCHAR (45) NOT NULL,
+    over_head_costs DECIMAL (10,2) NOT NULL,
+    PRIMARY KEY (department_id)
+);
+
+    INSERT INTO departments (department_name, over_head_costs)
+    VALUES
+        ("Sports & Outdoors", 250),
+        ("Sporting Goods", 340);
+        
+    SELECT * FROM bamazon_db.departments;

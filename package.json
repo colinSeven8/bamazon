@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/colinSeven8/bamazon.git"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
